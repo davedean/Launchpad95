@@ -12,7 +12,7 @@ from M4LInterface import M4LInterface
 import Settings
 
 SIDE_NOTES = (89,79,69,59,49,39,29,19)
-DRUM_NOTES = ()
+DRUM_NOTES = (41, 42, 43, 44, 45, 46, 47, 57, 58, 59, 60, 61, 62, 63, 73, 74, 75, 76, 77, 78, 79, 89, 90, 91, 92, 93, 94, 95, 105, 106, 107)
 DO_COMBINE = Live.Application.combine_apcs()  # requires 8.2 & higher
 
 
