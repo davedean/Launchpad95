@@ -11,8 +11,8 @@ from MainSelectorComponent import MainSelectorComponent
 from M4LInterface import M4LInterface
 import Settings
 
-SIDE_NOTES = (8, 24, 40, 56, 72, 88, 104, 120)
-DRUM_NOTES = (41, 42, 43, 44, 45, 46, 47, 57, 58, 59, 60, 61, 62, 63, 73, 74, 75, 76, 77, 78, 79, 89, 90, 91, 92, 93, 94, 95, 105, 106, 107)
+SIDE_NOTES = (89,79,69,59,49,39,29,19)
+DRUM_NOTES = ()
 DO_COMBINE = Live.Application.combine_apcs()  # requires 8.2 & higher
 
 
@@ -46,7 +46,10 @@ class Launchpad(ControlSurface):
 			for row in range(8):
 				button_row = []
 				for column in range(8):
-					button = ConfigurableButtonElement(is_momentary, MIDI_NOTE_TYPE, 0, row * 16 + column)
+					# buttons are assigned "top to bottom"
+ 					midi_note = (81 - (10 * row)) + column 
+					button = ConfigurableButtonElement(is_momentary, MIDI_NOTE_TYPE, 0, midi_note)
+					self.log_message(midi_note)
 					button.name = str(column) + '_Clip_' + str(row) + '_Button'
 					button_row.append(button)
 
@@ -145,11 +148,12 @@ class Launchpad(ControlSurface):
 		self.schedule_message(5, self._update_hardware)
 
 	def handle_sysex(self, midi_bytes):
-		if len(midi_bytes) == 8:
-			if midi_bytes[1:5] == (0, 32, 41, 6):
-				response = long(midi_bytes[5])
-				response += long(midi_bytes[6]) << 8
+		if len(midi_bytes) == 10:
+			if midi_bytes[:7] == (240, 0, 32, 41, 2, 24, 64):
+				response = long(midi_bytes[7])
+				response += long(midi_bytes[8]) << 8
 				if response == Live.Application.encrypt_challenge2(self._challenge):
+					self.log_message("Response ok")
 					self._suppress_send_midi = False
 					self.set_enabled(True)
 
@@ -177,10 +181,14 @@ class Launchpad(ControlSurface):
 		self._suppress_send_midi = False
 		self._send_challenge()
 
+	#def _send_challenge(self):
+	#	for index in range(4):
+	#		challenge_byte = self._challenge >> 8 * index & 127
+	#		self._send_midi((176, 17 + index, challenge_byte))
+
 	def _send_challenge(self):
-		for index in range(4):
-			challenge_byte = self._challenge >> 8 * index & 127
-			self._send_midi((176, 17 + index, challenge_byte))
+        	challenge_bytes = tuple([ self._challenge >> 8 * index & 127 for index in xrange(4) ])
+        	self._send_midi((240, 0, 32, 41, 2, 24, 64) + challenge_bytes + (247,))
 
 	def _user_byte_value(self, value):
 		assert (value in range(128))

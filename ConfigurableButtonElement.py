@@ -10,7 +10,7 @@ class ConfigurableButtonElement(ButtonElement):
 	def __init__(self, is_momentary, msg_type, channel, identifier):
 		ButtonElement.__init__(self, is_momentary, msg_type, channel, identifier)
 		self._on_value = 127
-		self._off_value = 4
+		self._off_value = 0
 		self._is_enabled = True
 		self._is_notifying = False
 		self._force_next_value = False
