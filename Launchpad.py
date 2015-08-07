@@ -101,6 +101,8 @@ class Launchpad(ControlSurface):
 		self._config_button.remove_value_listener(self._config_value)
 		ControlSurface.disconnect(self)
 		self._suppress_send_midi = False
+		# launchpad mk2
+        	self._send_midi((240, 0, 32, 41, 2, 24, 64, 247))
 		self._config_button.send_value(32)
 		self._config_button.send_value(0)
 		self._config_button = None
