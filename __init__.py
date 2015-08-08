@@ -1,16 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from Launchpad import Launchpad
+
+
+#from Launchpad import Launchpad
+from Launchpad_mk2 import Launchpad
 
 
 from _Framework.Capabilities import *  # noqa
 
 
-#def get_capabilities():
-#	return {
-#		CONTROLLER_ID_KEY: controller_id(vendor_id=4661, product_ids=[14], model_name='Launchpad'),
-#		PORTS_KEY: [inport(props=[NOTES_CC, REMOTE, SCRIPT]), outport(props=[NOTES_CC, REMOTE, SCRIPT])]}
+def get_capabilities():
+	return {
+		CONTROLLER_ID_KEY: controller_id(vendor_id=4661, product_ids=[14], model_name='Launchpad'),
+		PORTS_KEY: [inport(props=[NOTES_CC, REMOTE, SCRIPT]), outport(props=[NOTES_CC, REMOTE, SCRIPT])]}
 
+# mk2
 def get_capabilities():
     return {CONTROLLER_ID_KEY: controller_id(vendor_id=4661, product_ids=[105,
                          106,
