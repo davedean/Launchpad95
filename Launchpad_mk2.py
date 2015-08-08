@@ -27,6 +27,19 @@ class Launchpad(ControlSurface):
 		self._live_bugfix_version = live.get_bugfix_version()
 		ControlSurface.__init__(self, c_instance)
 		#self._device_selection_follows_track_selection = True
+		for vars in dir():
+   			self.log_message(vars)
+			value = eval(vars)
+  		        self.log_message(value)
+		for vars in globals():
+                        self.log_message(vars) 
+			value = eval(vars)
+                        self.log_message(value)
+		for vars in locals():
+                        self.log_message(vars)
+			value = eval(vars)
+                        self.log_message(value)
+	
 		with self.component_guard():
 			self._suppress_send_midi = True
 			self._suppress_session_highlight = True

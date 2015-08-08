@@ -2,7 +2,8 @@
 
 from _Framework.ButtonSliderElement import ButtonSliderElement
 from _Framework.InputControlElement import *  # noqa
-from consts import *  # noqa
+#from consts import * # mk1
+from consts_mk2 import * # mk2
 import math
 
 SLIDER_MODE_OFF = 0
@@ -125,51 +126,51 @@ class DeviceControllerStrip(ButtonSliderElement):
 	def _update_onoff(self):
 		v =  [0 for index in range(len(self._buttons))]
 		if self._value==self._max:
-		 	v[0]=RED_FULL
+		 	v[0]=OFF_FULL
 		else:
-			v[0]=RED_THIRD
+			v[0]=OFF_THIRD
 		self._update_buttons(tuple(v))
 
 	def _update_small_enum(self):
 		v =  [0 for index in range(len(self._buttons))]
 		for index in range(int(self._range+1)):
 			if self._value==index+self._min:
-				v[index]=AMBER_FULL
+				v[index]=MID_FULL
 			else:
-				v[index]=AMBER_THIRD
+				v[index]=MID_THIRD
 		self._update_buttons(tuple(v))
 
 	def _update_big_enum(self):
 		v =  [0 for index in range(len(self._buttons))]
 		if self._value>self._min:
-			v[3]=AMBER_FULL
+			v[3]=MID_FULL
 		else:
-			v[3]=AMBER_THIRD
+			v[3]=MID_THIRD
 		if self._value<self._max:
-			v[4]=AMBER_FULL
+			v[4]=MID_FULL
 		else:
-			v[4]=AMBER_THIRD
+			v[4]=MID_THIRD
 		self._update_buttons(tuple(v))
 	
 	def _update_slider(self):
 		v =  [0 for index in range(len(self._buttons))]
 		for index in range(len(self._buttons)):
 			if self._value >=self._value_map[index]*self._range+self._min:
-				v[index]=GREEN_FULL
+				v[index]=ON_FULL
 			else:
-				v[index]=GREEN_THIRD
+				v[index]=ON_THIRD
 		self._update_buttons(tuple(v))
 		
 	def _update_precision_slider(self):
 		v =  [0 for index in range(len(self._buttons))]
 		if self._value>self._min:
-			v[3]=GREEN_FULL
+			v[3]=ON_FULL
 		else:
-			v[3]=GREEN_THIRD
+			v[3]=ON_THIRD
 		if self._value<self._max:
-			v[4]=GREEN_FULL
+			v[4]=ON_FULL
 		else:
-			v[4]=GREEN_THIRD
+			v[4]=ON_THIRD
 		self._update_buttons(tuple(v))
 			
 	def _update_buttons(self, buttons):

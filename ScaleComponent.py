@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from _Framework.ControlSurfaceComponent import ControlSurfaceComponent
-from consts import *  # noqa
+#from consts import * # mk1
+from consts_mk2 import * # mk2
 import string
 import traceback
 
@@ -68,7 +69,7 @@ class Modus(Scale):
 
 class MelodicPattern(object):
 
-	def __init__(self, steps=[0, 0], scale=range(12), base_note=0, origin=[0, 0], valid_notes=xrange(128), base_note_color=GREEN_HALF, scale_note_color=AMBER_THIRD, scale_highlight_color=GREEN_FULL, foreign_note_color=LED_OFF, invalid_note_color=LED_OFF, chromatic_mode=False, chromatic_gtr_mode=False, diatonic_ns_mode=False, *a, **k):
+	def __init__(self, steps=[0, 0], scale=range(12), base_note=0, origin=[0, 0], valid_notes=xrange(128), base_note_color=ON_HALF, scale_note_color=MID_THIRD, scale_highlight_color=ON_FULL, foreign_note_color=LED_OFF, invalid_note_color=LED_OFF, chromatic_mode=False, chromatic_gtr_mode=False, diatonic_ns_mode=False, *a, **k):
 		super(MelodicPattern, self).__init__(*a, **k)
 		self.steps = steps
 		self.scale = scale
@@ -146,9 +147,9 @@ class ScalesComponent(ControlSurfaceComponent):
 		self._is_drumrack = False
 		self.is_absolute = False
 		self.is_quick_scale = False
-		self.base_note_color = AMBER_THIRD
-		self.scale_note_color = GREEN_THIRD
-		self.scale_highlight_color = GREEN_HALF
+		self.base_note_color = MID_THIRD
+		self.scale_note_color = ON_THIRD
+		self.scale_highlight_color = ON_HALF
 		self._presets = InstrumentPresetsComponent()
 		self._matrix = None
 		self._octave_index = 3
@@ -491,42 +492,42 @@ class ScalesComponent(ControlSurfaceComponent):
 			quick_scale_button = self._matrix.get_button(7, 1)
 
 			drumrack_button = self._matrix.get_button(7, 0)
-			drumrack_button.set_on_off_values(RED_FULL, RED_THIRD)
+			drumrack_button.set_on_off_values(OFF_FULL, OFF_THIRD)
 			drumrack_button.force_next_send()
 
 			chromatic_button = self._matrix.get_button(6, 0)
-			chromatic_button.set_on_off_values(RED_FULL, RED_THIRD)
+			chromatic_button.set_on_off_values(OFF_FULL, OFF_THIRD)
 			chromatic_button.force_next_send()
 
 			diatonic_button_4th = self._matrix.get_button(5, 0)
-			diatonic_button_4th.set_on_off_values(RED_FULL, RED_THIRD)
+			diatonic_button_4th.set_on_off_values(OFF_FULL, OFF_THIRD)
 			diatonic_button_4th.force_next_send()
 
 			diatonic_button_3rd = self._matrix.get_button(4, 0)
-			diatonic_button_3rd.set_on_off_values(RED_FULL, RED_THIRD)
+			diatonic_button_3rd.set_on_off_values(OFF_FULL, OFF_THIRD)
 			diatonic_button_3rd.force_next_send()
 
 			chromatic_gtr_button = self._matrix.get_button(2, 0)
-			chromatic_gtr_button.set_on_off_values(RED_FULL, RED_THIRD)
+			chromatic_gtr_button.set_on_off_values(OFF_FULL, OFF_THIRD)
 			chromatic_gtr_button.force_next_send()
 
 			diatonic_ns_button = self._matrix.get_button(3, 0)
-			diatonic_ns_button.set_on_off_values(RED_FULL, RED_THIRD)
+			diatonic_ns_button.set_on_off_values(OFF_FULL, OFF_THIRD)
 			diatonic_ns_button.force_next_send()
 
 			# circle of 5th nav right
 			button = self._matrix.get_button(7, 2)
-			button.set_on_off_values(RED_THIRD, RED_THIRD)
+			button.set_on_off_values(OFF_THIRD, OFF_THIRD)
 			button.force_next_send()
 			button.turn_on()
 			# circle of 5th nav left
 			button = self._matrix.get_button(6, 1)
-			button.set_on_off_values(RED_THIRD, RED_THIRD)
+			button.set_on_off_values(OFF_THIRD, OFF_THIRD)
 			button.force_next_send()
 			button.turn_on()
 			# relative scale button
 			button = self._matrix.get_button(2, 1)
-			button.set_on_off_values(RED_THIRD, RED_THIRD)
+			button.set_on_off_values(OFF_THIRD, OFF_THIRD)
 			button.force_next_send()
 			button.turn_on()
 
@@ -545,18 +546,18 @@ class ScalesComponent(ControlSurfaceComponent):
 				quick_scale_button.set_on_off_values(LED_OFF, LED_OFF)
 				quick_scale_button.turn_off()
 			else:
-				quick_scale_button.set_on_off_values(GREEN_FULL, GREEN_THIRD)
+				quick_scale_button.set_on_off_values(ON_FULL, ON_THIRD)
 				if self.is_quick_scale:
 					quick_scale_button.turn_on()
 				else:
 					quick_scale_button.turn_off()
-				orientation_button.set_on_off_values(AMBER_THIRD, AMBER_FULL)
+				orientation_button.set_on_off_values(MID_THIRD, MID_FULL)
 				if self._presets.is_horizontal:
 					orientation_button.turn_on()
 				else:
 					orientation_button.turn_off()
 
-				absolute_button.set_on_off_values(AMBER_THIRD, AMBER_FULL)
+				absolute_button.set_on_off_values(MID_THIRD, MID_FULL)
 				if self.is_absolute:
 					absolute_button.turn_on()
 				else:
@@ -593,7 +594,7 @@ class ScalesComponent(ControlSurfaceComponent):
 			scene_index = 3
 			for track_index in range(8):
 				button = self._matrix.get_button(track_index, scene_index)
-				button.set_on_off_values(RED_FULL, RED_THIRD)
+				button.set_on_off_values(OFF_FULL, OFF_THIRD)
 				if track_index == self._octave_index:
 					button.turn_on()
 				else:
@@ -604,12 +605,12 @@ class ScalesComponent(ControlSurfaceComponent):
 				for scene_index in range(1, 3):
 					for track_index in range(8):
 						button = self._matrix.get_button(track_index, scene_index)
-						button.set_on_off_values(GREEN_FULL, LED_OFF)
+						button.set_on_off_values(ON_FULL, LED_OFF)
 						button.turn_off()
 				for scene_index in range(4, 8):
 					for track_index in range(8):
 						button = self._matrix.get_button(track_index, scene_index)
-						button.set_on_off_values(GREEN_FULL, LED_OFF)
+						button.set_on_off_values(ON_FULL, LED_OFF)
 						button.turn_off()
 			else:
 				# root note button
@@ -617,7 +618,7 @@ class ScalesComponent(ControlSurfaceComponent):
 				for track_index in [0, 1, 3, 4, 5]:
 					button = self._matrix.get_button(track_index, scene_index)
 					if track_index in [0, 1, 3, 4, 5]:
-						button.set_on_off_values(AMBER_FULL, AMBER_THIRD)
+						button.set_on_off_values(MID_FULL, MID_THIRD)
 					if self._selected_key % 12 == (self._index[track_index] + 1) % 12:
 						button.turn_on()
 					else:
@@ -626,7 +627,7 @@ class ScalesComponent(ControlSurfaceComponent):
 				scene_index = 2
 				for track_index in range(7):
 					button = self._matrix.get_button(track_index, scene_index)
-					button.set_on_off_values(AMBER_FULL, AMBER_THIRD)
+					button.set_on_off_values(MID_FULL, MID_THIRD)
 					if self._selected_key % 12 == self._index[track_index] % 12:
 						button.turn_on()
 					else:
@@ -637,7 +638,7 @@ class ScalesComponent(ControlSurfaceComponent):
 					for track_index in range(8):
 						button = self._matrix.get_button(track_index, scene_index + 4)
 						if scene_index * 8 + track_index < len(self._modus_list):
-							button.set_on_off_values(GREEN_FULL, GREEN_THIRD)
+							button.set_on_off_values(ON_FULL, ON_THIRD)
 							if self._selected_modus == scene_index * 8 + track_index:
 								button.turn_on()
 							else:

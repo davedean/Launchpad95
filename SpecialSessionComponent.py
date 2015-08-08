@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from _Framework.SessionComponent import SessionComponent
-from consts import *
 
+#from consts import * # mk1
+from consts_mk2 import * # mk2
 
 class SpecialSessionComponent(SessionComponent):
 
@@ -77,7 +78,7 @@ class SpecialSessionComponent(SessionComponent):
 					if track.fired_slot_index == -2:
 						button.send_value(self._stop_clip_triggered_value)
 					elif track.playing_slot_index >= 0:
-						button.send_value(AMBER_THIRD)
+						button.send_value(MID_THIRD)
 					else:
 						#self._parent._parent.log_message("index:"+str(index))
 						button.turn_off()

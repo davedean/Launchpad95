@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from consts import *  # noqa
+#from consts import * # mk1
+from consts_mk2 import * # mk2
 from _Framework.ControlSurfaceComponent import ControlSurfaceComponent
 from _Framework.ButtonElement import ButtonElement
 from _Framework.ButtonMatrixElement import ButtonMatrixElement
@@ -39,10 +40,10 @@ class MelodicNoteEditorComponent(ControlSurfaceComponent):
 		self._side_buttons = side_buttons
 
 		# metronome
-		self.metronome_color = AMBER_FULL
+		self.metronome_color = MID_FULL
 
 		# other colors
-		self.playing_note_color = RED_FULL
+		self.playing_note_color = OFF_FULL
 
 		# buttons
 		self._matrix = None
@@ -298,43 +299,43 @@ class MelodicNoteEditorComponent(ControlSurfaceComponent):
 					for y in range(7):
 						if self._mode == STEPSEQ_MODE_NOTES:
 							if self._notes_pitches[(x + 8 * self._page) * 7 + 6 - y] == 1:
-								self._grid_back_buffer[x][y] = GREEN_FULL
+								self._grid_back_buffer[x][y] = ON_FULL
 							else:
 								self._grid_back_buffer[x][y] = LED_OFF
 
 						elif self._mode == STEPSEQ_MODE_NOTES_OCTAVES:
 							if(has_note):
 								if self._notes_octaves[x + 8 * self._page] == 6 - y:
-									self._grid_back_buffer[x][y] = RED_HALF
+									self._grid_back_buffer[x][y] = OFF_HALF
 								else:
 									self._grid_back_buffer[x][y] = LED_OFF
 							else:
 								if self._notes_octaves[x + 8 * self._page] == 6 - y:
-									self._grid_back_buffer[x][y] = RED_THIRD
+									self._grid_back_buffer[x][y] = OFF_THIRD
 								else:
 									self._grid_back_buffer[x][y] = LED_OFF
 
 						elif self._mode == STEPSEQ_MODE_NOTES_VELOCITIES:
 							if(has_note):
 								if self._notes_velocities[x + 8 * self._page] >= 6 - y:
-									self._grid_back_buffer[x][y] = RED_HALF
+									self._grid_back_buffer[x][y] = OFF_HALF
 								else:
 									self._grid_back_buffer[x][y] = LED_OFF
 							else:
 								if self._notes_velocities[x + 8 * self._page] >= 6 - y:
-									self._grid_back_buffer[x][y] = RED_THIRD
+									self._grid_back_buffer[x][y] = OFF_THIRD
 								else:
 									self._grid_back_buffer[x][y] = LED_OFF
 
 						elif self._mode == STEPSEQ_MODE_NOTES_LENGTHS:
 							if(has_note):
 								if self._notes_lengths[x + 8 * self._page] >= 6 - y:
-									self._grid_back_buffer[x][y] = AMBER_FULL
+									self._grid_back_buffer[x][y] = MID_FULL
 								else:
 									self._grid_back_buffer[x][y] = LED_OFF
 							else:
 								if self._notes_lengths[x + 8 * self._page] >= 6 - y:
-									self._grid_back_buffer[x][y] = AMBER_THIRD
+									self._grid_back_buffer[x][y] = MID_THIRD
 								else:
 									self._grid_back_buffer[x][y] = LED_OFF
 				# metronome
@@ -344,14 +345,14 @@ class MelodicNoteEditorComponent(ControlSurfaceComponent):
 					page = int(self._playhead / self.quantization / 8)
 					if self._mode == STEPSEQ_MODE_NOTES_LENGTHS:
 						if page == self._page:
-							self.metronome_color = RED_FULL
+							self.metronome_color = OFF_FULL
 						else:
-							self.metronome_color = RED_THIRD
+							self.metronome_color = OFF_THIRD
 					else:
 						if page == self._page:
-							self.metronome_color = AMBER_FULL
+							self.metronome_color = MID_FULL
 						else:
-							self.metronome_color = AMBER_THIRD
+							self.metronome_color = MID_THIRD
 					self._grid_back_buffer[play_x_position][6] = self.metronome_color
 
 					# playing notes
@@ -359,9 +360,9 @@ class MelodicNoteEditorComponent(ControlSurfaceComponent):
 						for y in range(7):
 							if self._notes_pitches[play_position * 7 + 6 - y] == 1:
 								if page == self._page:
-									self._grid_back_buffer[play_x_position][y] = RED_FULL
+									self._grid_back_buffer[play_x_position][y] = OFF_FULL
 								else:
-									self._grid_back_buffer[play_x_position][y] = RED_THIRD
+									self._grid_back_buffer[play_x_position][y] = OFF_THIRD
 
 			else:
 				for x in range(8):
@@ -455,7 +456,7 @@ class MelodicNoteEditorComponent(ControlSurfaceComponent):
 		if self.is_enabled():
 			if (self._random_button != None):
 				if self._clip != None:
-					self._random_button.set_on_off_values(GREEN_FULL, GREEN_THIRD)
+					self._random_button.set_on_off_values(ON_FULL, ON_THIRD)
 					self._random_button.turn_off()
 				else:
 					self._random_button.set_on_off_values(LED_OFF, LED_OFF)
@@ -475,7 +476,7 @@ class MelodicNoteEditorComponent(ControlSurfaceComponent):
 		assert (self._random_button != None)
 		assert (value in range(128))
 		if self.is_enabled() and self._clip != None:
-			self._random_button.set_on_off_values(GREEN_FULL, GREEN_THIRD)
+			self._random_button.set_on_off_values(ON_FULL, ON_THIRD)
 			if ((value is 0) and (sender.is_momentary())):
 				self._random_button.turn_off()
 				self._randomise()
@@ -514,7 +515,7 @@ class MelodicNoteEditorComponent(ControlSurfaceComponent):
 		if self.is_enabled():
 			if (self._mode_notes_pitches_button != None):
 				if self._clip != None:
-					self._mode_notes_pitches_button.set_on_off_values(GREEN_FULL, GREEN_THIRD)
+					self._mode_notes_pitches_button.set_on_off_values(ON_FULL, ON_THIRD)
 					if self._mode == STEPSEQ_MODE_NOTES:
 						self._mode_notes_pitches_button.turn_on()
 					else:
@@ -562,7 +563,7 @@ class MelodicNoteEditorComponent(ControlSurfaceComponent):
 		if self.is_enabled():
 			if (self._mode_notes_octaves_button != None):
 				if self._clip != None:
-					self._mode_notes_octaves_button.set_on_off_values(RED_FULL, RED_THIRD)
+					self._mode_notes_octaves_button.set_on_off_values(OFF_FULL, OFF_THIRD)
 					if self._mode == STEPSEQ_MODE_NOTES_OCTAVES:
 						self._mode_notes_octaves_button.turn_on()
 					else:
@@ -598,7 +599,7 @@ class MelodicNoteEditorComponent(ControlSurfaceComponent):
 		if self.is_enabled():
 			if (self._mode_notes_velocities_button != None):
 				if self._clip != None:
-					self._mode_notes_velocities_button.set_on_off_values(RED_FULL, RED_THIRD)
+					self._mode_notes_velocities_button.set_on_off_values(OFF_FULL, OFF_THIRD)
 					if self._mode == STEPSEQ_MODE_NOTES_VELOCITIES:
 						self._mode_notes_velocities_button.turn_on()
 					else:
@@ -637,7 +638,7 @@ class MelodicNoteEditorComponent(ControlSurfaceComponent):
 		if self.is_enabled():
 			if (self._mode_notes_lengths_button != None):
 				if self._clip != None:
-					self._mode_notes_lengths_button.set_on_off_values(AMBER_FULL, AMBER_THIRD)
+					self._mode_notes_lengths_button.set_on_off_values(MID_FULL, MID_THIRD)
 					if self._mode == STEPSEQ_MODE_NOTES_LENGTHS:
 						self._mode_notes_lengths_button.turn_on()
 					else:

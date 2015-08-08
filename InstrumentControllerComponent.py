@@ -9,7 +9,8 @@ from itertools import imap
 from TrackControllerComponent import TrackControllerComponent
 from ScaleComponent import *  # noqa
 from StepSequencerComponent import StepSequencerComponent
-from consts import *  # noqa
+#from consts import * # mk1
+from consts_mk2 import * # mk2
 import Settings
 
 class InstrumentControllerComponent(CompoundComponent):
@@ -25,8 +26,8 @@ class InstrumentControllerComponent(CompoundComponent):
 		self.base_channel = 11
 		self._quick_scales = [0, 1, 2, 3, 4, 5, 6, 7, 10, 13, 14, 15, 17, 18, 24]
 		self._quick_scale_root = True
-		self._normal_feedback_velocity = AMBER_FULL
-		self._recordind_feedback_velocity = RED_FULL
+		self._normal_feedback_velocity = MID_FULL
+		self._recordind_feedback_velocity = OFF_FULL
 		self._drum_group_device = None
 		self._octave_up_button = None
 		self._octave_down_button = None
@@ -120,7 +121,7 @@ class InstrumentControllerComponent(CompoundComponent):
 
 	def _scales_toggle(self, value, sender):
 		if self.is_enabled():
-			self._scales_toggle_button.set_on_off_values(AMBER_FULL, AMBER_THIRD)
+			self._scales_toggle_button.set_on_off_values(MID_FULL, MID_THIRD)
 			if (value is not 0):
 				self._scales.set_enabled(True)
 				self._osd_mode_backup = self._osd.mode
@@ -277,18 +278,18 @@ class InstrumentControllerComponent(CompoundComponent):
 				button.turn_off()
 
 			if self._scales_toggle_button != None:
-				self._scales_toggle_button.set_on_off_values(AMBER_FULL, AMBER_THIRD)
+				self._scales_toggle_button.set_on_off_values(MID_FULL, MID_THIRD)
 				self._scales_toggle_button.turn_off()
 
 			if self._octave_up_button != None:
-				self._octave_up_button.set_on_off_values(GREEN_FULL, GREEN_THIRD)
+				self._octave_up_button.set_on_off_values(ON_FULL, ON_THIRD)
 				if(self._can_scroll_octave_up()):
 					self._octave_up_button.turn_on()
 				else:
 					self._octave_up_button.turn_off()
 
 			if self._octave_down_button != None:
-				self._octave_down_button.set_on_off_values(GREEN_FULL, GREEN_THIRD)
+				self._octave_down_button.set_on_off_values(ON_FULL, ON_THIRD)
 				if(self._can_scroll_octave_down()):
 					self._octave_down_button.turn_on()
 				else:
@@ -433,12 +434,12 @@ class InstrumentControllerComponent(CompoundComponent):
 
 						if note < 128 and note >= 0:
 							if self._drum_group_device != None and self._drum_group_device.can_have_drum_pads and self._drum_group_device.has_drum_pads and self._drum_group_device.drum_pads[note].chains:
-								button.set_on_off_values(RED_FULL, GREEN_THIRD)
+								button.set_on_off_values(OFF_FULL, ON_THIRD)
 								button.set_enabled(False)
 								button.set_channel(self.base_channel)
 								button.set_identifier(note)
 							else:
-								button.set_on_off_values(GREEN_FULL, LED_OFF)
+								button.set_on_off_values(ON_FULL, LED_OFF)
 								button.set_enabled(False)
 								button.set_channel(self.base_channel)
 								button.set_identifier(note)
@@ -452,7 +453,7 @@ class InstrumentControllerComponent(CompoundComponent):
 			else:
 				if self._scales.is_quick_scale:
 					quick_scale_root_button = self._matrix.get_button(7, 0)
-					quick_scale_root_button.set_on_off_values(RED_THIRD, RED_FULL)
+					quick_scale_root_button.set_on_off_values(OFF_THIRD, OFF_FULL)
 					quick_scale_root_button.set_enabled(True)
 					quick_scale_root_button.force_next_send()
 					if self._quick_scale_root:
@@ -465,23 +466,23 @@ class InstrumentControllerComponent(CompoundComponent):
 
 					if self._quick_scale_root:
 						if selected_modus == 0 or selected_modus == 12:
-							off_color = AMBER_THIRD
-							on_color = AMBER_FULL
-							fifth_button_color = RED_THIRD
-							mode_button_color = RED_THIRD
-							relative_scale_button_color = RED_THIRD
+							off_color = MID_THIRD
+							on_color = MID_FULL
+							fifth_button_color = OFF_THIRD
+							mode_button_color = OFF_THIRD
+							relative_scale_button_color = OFF_THIRD
 						elif selected_modus == 1 or selected_modus == 11:
-							off_color = RED_THIRD
-							on_color = RED_FULL
-							fifth_button_color = GREEN_THIRD
-							mode_button_color = GREEN_THIRD
-							relative_scale_button_color = GREEN_THIRD
+							off_color = OFF_THIRD
+							on_color = OFF_FULL
+							fifth_button_color = ON_THIRD
+							mode_button_color = ON_THIRD
+							relative_scale_button_color = ON_THIRD
 						else:
-							off_color = GREEN_THIRD
-							on_color = GREEN_FULL
-							fifth_button_color = RED_THIRD
-							mode_button_color = RED_THIRD
-							relative_scale_button_color = RED_THIRD
+							off_color = ON_THIRD
+							on_color = ON_FULL
+							fifth_button_color = OFF_THIRD
+							mode_button_color = OFF_THIRD
+							relative_scale_button_color = OFF_THIRD
 
 						# circle of 5th nav right
 						button = self._matrix.get_button(7, 1)
@@ -528,7 +529,7 @@ class InstrumentControllerComponent(CompoundComponent):
 							button = self._matrix.get_button(x, 0)
 							button.set_enabled(True)
 							if self._quick_scales[x] != -1:
-								button.set_on_off_values(AMBER_FULL, AMBER_THIRD)
+								button.set_on_off_values(MID_FULL, MID_THIRD)
 							else:
 								button.set_on_off_values(LED_OFF, LED_OFF)
 							button.force_next_send()
@@ -541,7 +542,7 @@ class InstrumentControllerComponent(CompoundComponent):
 							button = self._matrix.get_button(x, 1)
 							button.set_enabled(True)
 							if self._quick_scales[x + 7] != -1:
-								button.set_on_off_values(AMBER_FULL, AMBER_THIRD)
+								button.set_on_off_values(MID_FULL, MID_THIRD)
 							else:
 								button.set_on_off_values(LED_OFF, LED_OFF)
 							button.force_next_send()
@@ -557,7 +558,7 @@ class InstrumentControllerComponent(CompoundComponent):
 					if button and (not self._scales.is_quick_scale or j > 1):
 						note_info = pattern.note(i, max_j - j)
 						if note_info.index != None:
-							button.set_on_off_values(RED_FULL, note_info.color)
+							button.set_on_off_values(OFF_FULL, note_info.color)
 							button.set_enabled(False)
 							button.set_channel(note_channel[note_info.index])
 							# comment the line above and use the one below if you want instrument controller to use one channel instead of 3

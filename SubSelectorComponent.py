@@ -6,7 +6,10 @@ from _Framework.ButtonMatrixElement import ButtonMatrixElement
 from _Framework.SessionComponent import SessionComponent
 from SpecialMixerComponent import SpecialMixerComponent
 from PreciseButtonSliderElement import *  # noqa
-from consts import *  # noqa
+
+#from consts import * # mk1
+from consts_mk2 import * # mk2
+
 PAN_VALUE_MAP = (-1.0, -0.634921, -0.31746, 0.0, 0.0, 0.31746, 0.634921, 1.0)
 VOL_VALUE_MAP = (0.0, 0.142882, 0.302414, 0.4, 0.55, 0.7, 0.85, 1.0)
 SEND_VALUE_MAP = (0.0, 0.103536, 0.164219, 0.238439, 0.343664, 0.55, 0.774942, 1.0)
@@ -120,7 +123,7 @@ class SubSelectorComponent(ModeSelectorComponent):
 		if self.is_enabled():
 			if (self._modes_buttons != None):
 				for index in range(len(self._modes_buttons)):
-					self._modes_buttons[index].set_on_off_values(GREEN_FULL, GREEN_THIRD)
+					self._modes_buttons[index].set_on_off_values(ON_FULL, ON_THIRD)
 					if (index == self._mode_index):
 						self._modes_buttons[index].turn_on()
 					else:
@@ -164,14 +167,14 @@ class SubSelectorComponent(ModeSelectorComponent):
 			strip.set_volume_control(None)
 			self._sliders[track].release_parameter()
 			for row in range(self._matrix.height()):
-				full_value = GREEN_THIRD
-				third_value = GREEN_FULL
+				full_value = ON_THIRD
+				third_value = ON_FULL
 				if row == trkon_index:
-					full_value = AMBER_FULL
-					third_value = AMBER_THIRD
+					full_value = MID_FULL
+					third_value = MID_THIRD
 				elif row > 3:
-					full_value = RED_FULL
-					third_value = RED_THIRD
+					full_value = OFF_FULL
+					third_value = OFF_THIRD
 				self._matrix.get_button(track, row).set_on_off_values(full_value, third_value)
 
 			strip.set_default_buttons(self._matrix.get_button(track, 0), self._matrix.get_button(track, 1), self._matrix.get_button(track, 2), self._matrix.get_button(track, 3))
@@ -182,9 +185,9 @@ class SubSelectorComponent(ModeSelectorComponent):
 
 		for button in self._side_buttons:
 			if list(self._side_buttons).index(button) == trkon_index - 4:
-				button.set_on_off_values(AMBER_FULL, AMBER_THIRD)
+				button.set_on_off_values(MID_FULL, MID_THIRD)
 			else:
-				button.set_on_off_values(RED_FULL, RED_THIRD)
+				button.set_on_off_values(OFF_FULL, OFF_THIRD)
 			button.set_force_next_value()
 			button.turn_off()
 
@@ -202,7 +205,7 @@ class SubSelectorComponent(ModeSelectorComponent):
 			strip.set_send_controls((None, None))
 			strip.set_pan_control(None)
 			for row in range(self._matrix.height()):
-				self._matrix.get_button(track, row).set_on_off_values(GREEN_FULL, LED_OFF)
+				self._matrix.get_button(track, row).set_on_off_values(ON_FULL, LED_OFF)
 
 			self._sliders[track].set_mode(SLIDER_MODE_VOLUME)
 			self._sliders[track].set_value_map(VOL_VALUE_MAP)
@@ -222,7 +225,7 @@ class SubSelectorComponent(ModeSelectorComponent):
 			strip.set_send_controls((None, None))
 			strip.set_volume_control(None)
 			for row in range(self._matrix.height()):
-				self._matrix.get_button(track, row).set_on_off_values(AMBER_FULL, LED_OFF)
+				self._matrix.get_button(track, row).set_on_off_values(MID_FULL, LED_OFF)
 
 			self._sliders[track].set_mode(SLIDER_MODE_PAN)
 			self._sliders[track].set_value_map(PAN_VALUE_MAP)
@@ -242,7 +245,7 @@ class SubSelectorComponent(ModeSelectorComponent):
 			strip.set_volume_control(None)
 			strip.set_pan_control(None)
 			for row in range(self._matrix.height()):
-				self._matrix.get_button(track, row).set_on_off_values(RED_FULL, LED_OFF)
+				self._matrix.get_button(track, row).set_on_off_values(OFF_FULL, LED_OFF)
 
 			self._sliders[track].set_mode(SLIDER_MODE_VOLUME)
 			self._sliders[track].set_value_map(SEND_VALUE_MAP)
@@ -262,7 +265,7 @@ class SubSelectorComponent(ModeSelectorComponent):
 			strip.set_volume_control(None)
 			strip.set_pan_control(None)
 			for row in range(self._matrix.height()):
-				self._matrix.get_button(track, row).set_on_off_values(RED_FULL, LED_OFF)
+				self._matrix.get_button(track, row).set_on_off_values(OFF_FULL, LED_OFF)
 
 			self._sliders[track].set_mode(SLIDER_MODE_VOLUME)
 			self._sliders[track].set_value_map(SEND_VALUE_MAP)

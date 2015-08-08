@@ -144,11 +144,11 @@ class MainSelectorComponent(ModeSelectorComponent):
 	def _update_mode_buttons(self):
 		for index in range(4):
 			if(self._sub_mode_index[index] == 0):
-				self._modes_buttons[index].set_on_off_values(AMBER_FULL, AMBER_THIRD)
+				self._modes_buttons[index].set_on_off_values(MID_FULL, MID_THIRD)
 			if(self._sub_mode_index[index] == 1):
-				self._modes_buttons[index].set_on_off_values(GREEN_FULL, GREEN_THIRD)
+				self._modes_buttons[index].set_on_off_values(ON_FULL, ON_THIRD)
 			if(self._sub_mode_index[index] == 2):
-				self._modes_buttons[index].set_on_off_values(RED_FULL, RED_THIRD)
+				self._modes_buttons[index].set_on_off_values(OFF_FULL, OFF_THIRD)
 
 			if (index == self._main_mode_index):
 				self._modes_buttons[index].turn_on()
@@ -320,7 +320,7 @@ class MainSelectorComponent(ModeSelectorComponent):
 		assert isinstance(as_active, type(False))
 		for button in self._nav_buttons:
 			if as_enabled:
-				button.set_on_off_values(GREEN_FULL, GREEN_THIRD)
+				button.set_on_off_values(ON_FULL, ON_THIRD)
 			else:
 				button.set_on_off_values(127, LED_OFF)
 
@@ -348,11 +348,11 @@ class MainSelectorComponent(ModeSelectorComponent):
 			if self._session._stop_clip_buttons != None:
 				for button in self._session._stop_clip_buttons:
 					button.set_enabled(as_active)
-					button.set_on_off_values(AMBER_THIRD, LED_OFF)
+					button.set_on_off_values(MID_THIRD, LED_OFF)
 				self._session.set_stop_track_clip_buttons(self._session._stop_clip_buttons)
 
 				self._side_buttons[self._session._num_scenes].set_enabled(as_active)
-				self._side_buttons[self._session._num_scenes].set_on_off_values(AMBER_THIRD, LED_OFF)
+				self._side_buttons[self._session._num_scenes].set_on_off_values(MID_THIRD, LED_OFF)
 				self._session.set_stop_all_clips_button(self._side_buttons[self._session._num_scenes])
 			else:
 				self._session.set_stop_track_clip_buttons(None)
@@ -480,11 +480,11 @@ class MainSelectorComponent(ModeSelectorComponent):
 		bugfix = self._parent._live_bugfix_version
 		if (major >= 9 and minor > 1) or (major >= 9 and minor >= 1 and bugfix >= 2):
 			# api changed in 9.1.2
-			self._session.set_stop_clip_value(AMBER_THIRD)
-			self._session.set_stop_clip_triggered_value(AMBER_BLINK)
+			self._session.set_stop_clip_value(MID_THIRD)
+			self._session.set_stop_clip_triggered_value(MID_BLINK)
 		else:
 			# api for 9.1.1 below
-			self._session.set_stop_track_clip_value(AMBER_BLINK)
+			self._session.set_stop_track_clip_value(MID_BLINK)
 
 		session_height = self._matrix.height()
 		if self._session._stop_clip_buttons != None:
@@ -492,22 +492,22 @@ class MainSelectorComponent(ModeSelectorComponent):
 			
 		for scene_index in range(session_height):
 			scene = self._session.scene(scene_index)
-			scene.set_triggered_value(GREEN_BLINK)
+			scene.set_triggered_value(ON_BLINK)
 			scene.name = 'Scene_' + str(scene_index)
 			for track_index in range(self._matrix.width()):
 				clip_slot = scene.clip_slot(track_index)
-				clip_slot.set_triggered_to_play_value(GREEN_BLINK)
-				clip_slot.set_triggered_to_record_value(RED_BLINK)
-				clip_slot.set_stopped_value(AMBER_FULL)
-				clip_slot.set_started_value(GREEN_FULL)
-				clip_slot.set_recording_value(RED_FULL)
-				clip_slot.set_record_button_value(RED_THIRD)
+				clip_slot.set_triggered_to_play_value(ON_BLINK)
+				clip_slot.set_triggered_to_record_value(OFF_BLINK)
+				clip_slot.set_stopped_value(MID_FULL)
+				clip_slot.set_started_value(ON_FULL)
+				clip_slot.set_recording_value(OFF_FULL)
+				clip_slot.set_record_button_value(OFF_THIRD)
 				clip_slot.name = str(track_index) + '_Clip_Slot_' + str(scene_index)
 				self._all_buttons.append(self._matrix.get_button(track_index, scene_index))
 
-		self._zooming.set_stopped_value(RED_FULL)
-		self._zooming.set_selected_value(AMBER_FULL)
-		self._zooming.set_playing_value(GREEN_FULL)
+		self._zooming.set_stopped_value(OFF_FULL)
+		self._zooming.set_selected_value(MID_FULL)
+		self._zooming.set_playing_value(ON_FULL)
 
 	def _activate_navigation_buttons(self, active):
 		for button in self._nav_buttons:
