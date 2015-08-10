@@ -23,5 +23,5 @@ STEPSEQ__SAVE_SCALE = None
 INSTRUMENT__SAVE_SCALE = None
 
 # toggle between mk1 and mk2 
-HW_VERISON=mk2
+HW_VERSION='mk2'
 

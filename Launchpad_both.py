@@ -214,7 +214,7 @@ class Launchpad(ControlSurface):
 		if Settings.HW_VERSION=='mk1':
 			for index in range(4):
 				challenge_byte = self._challenge >> 8 * index & 127
-				self._send_midi((176, 17 + index, challenge_byte))A
+				self._send_midi((176, 17 + index, challenge_byte))
 		elif Settings.HW_VERSION=='mk2':
                		challenge_bytes = tuple([ self._challenge >> 8 * index & 127 for index in xrange(4) ])
                 	self._send_midi((240, 0, 32, 41, 2, 24, 64) + challenge_bytes + (247,))
