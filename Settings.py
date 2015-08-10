@@ -22,5 +22,6 @@ USER_MODES = ["instrument", "device", "user 1", "drum stepseq", "melodic stepseq
 STEPSEQ__SAVE_SCALE = None
 INSTRUMENT__SAVE_SCALE = None
 
-
+# toggle between mk1 and mk2 
+HW_VERISON=mk2
 

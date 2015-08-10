@@ -3,7 +3,7 @@
 
 
 #from Launchpad import Launchpad
-from Launchpad_mk2 import Launchpad
+from Launchpad_both import Launchpad
 
 
 from _Framework.Capabilities import *  # noqa
