@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#from consts import * # mk1
-from consts_mk2 import * # mk2
+from consts import * # mk1
 
 from _Framework.MixerComponent import MixerComponent
 from _Framework.ButtonElement import ButtonElement

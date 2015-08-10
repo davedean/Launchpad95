@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from _Framework.ControlSurfaceComponent import ControlSurfaceComponent
-#from consts import * # mk1
-from consts_mk2 import * # mk2
+from consts import * 
 import string
 import traceback
 

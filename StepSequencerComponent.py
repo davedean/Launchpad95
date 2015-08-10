@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import Live
-#from consts import * # mk1
-from consts_mk2 import * # mk2
+from consts import * 
 from _Framework.ControlSurfaceComponent import ControlSurfaceComponent
 from _Framework.CompoundComponent import CompoundComponent
 from _Framework.ButtonElement import ButtonElement

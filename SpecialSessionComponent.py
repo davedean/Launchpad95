@@ -2,8 +2,7 @@
 
 from _Framework.SessionComponent import SessionComponent
 
-#from consts import * # mk1
-from consts_mk2 import * # mk2
+from consts import * 
 
 class SpecialSessionComponent(SessionComponent):
 

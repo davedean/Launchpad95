@@ -7,8 +7,7 @@ from _Framework.SessionComponent import SessionComponent
 from SpecialMixerComponent import SpecialMixerComponent
 from PreciseButtonSliderElement import *  # noqa
 
-#from consts import * # mk1
-from consts_mk2 import * # mk2
+from consts import * 
 
 PAN_VALUE_MAP = (-1.0, -0.634921, -0.31746, 0.0, 0.0, 0.31746, 0.634921, 1.0)
 VOL_VALUE_MAP = (0.0, 0.142882, 0.302414, 0.4, 0.55, 0.7, 0.85, 1.0)

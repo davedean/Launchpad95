@@ -2,8 +2,7 @@
 
 from _Framework.ButtonSliderElement import ButtonSliderElement
 from _Framework.InputControlElement import *  # noqa
-#from consts import * # mk1
-from consts_mk2 import * # mk2
+from consts import * 
 import math
 
 SLIDER_MODE_OFF = 0

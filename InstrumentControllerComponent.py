@@ -9,8 +9,7 @@ from itertools import imap
 from TrackControllerComponent import TrackControllerComponent
 from ScaleComponent import *  # noqa
 from StepSequencerComponent import StepSequencerComponent
-#from consts import * # mk1
-from consts_mk2 import * # mk2
+from consts import * 
 import Settings
 
 class InstrumentControllerComponent(CompoundComponent):

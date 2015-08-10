@@ -1,23 +1,47 @@
 # -*- coding: utf-8 -*-
 # flake8: noqa
 
-# LaunchPad Colours
-LED_OFF = 4
+import Settings
 
-OFF_FULL = 7
-OFF_HALF = 6
-OFF_THIRD = 5
-OFF_BLINK = 11
+if Settings.HW_VERSION=='mk1':
+	# LaunchPad Colours
+	LED_OFF = 4
 
-ON_FULL = 52
-ON_HALF = 36
-ON_THIRD = 20
-ON_BLINK = 56
+	OFF_FULL = 7
+	OFF_HALF = 6
+	OFF_THIRD = 5
+	OFF_BLINK = 11
 
-MID_FULL = ((OFF_FULL + ON_FULL) - 4)
-MID_HALF = ((OFF_HALF + ON_HALF) - 4)
-MID_THIRD = ((OFF_THIRD + ON_THIRD) - 4)
-MID_BLINK = ((MID_FULL - 4) + 8)
+	ON_FULL = 52
+	ON_HALF = 36
+	ON_THIRD = 20
+	ON_BLINK = 56
+
+	MID_FULL = ((OFF_FULL + ON_FULL) - 4)
+	MID_HALF = ((OFF_HALF + ON_HALF) - 4)
+	MID_THIRD = ((OFF_THIRD + ON_THIRD) - 4)
+	MID_BLINK = ((MID_FULL - 4) + 8)
+
+elif Settings.HW_VERSION=='mk2':
+	# LaunchPad Colours
+	LED_OFF = 0
+
+	OFF_FULL = 5
+	OFF_HALF = 7
+	OFF_THIRD = 9
+	OFF_BLINK = 5
+
+	ON_FULL = 21
+	ON_HALF = 27
+	ON_THIRD = 29
+	ON_BLINK = 21
+
+	MID_FULL = 13
+	MID_HALF = 15
+	MID_THIRD = 19
+	MID_BLINK = 14
+	# TBD: 'Blink' is implemented differently on mk2
+
 
 # Scales
 KEY_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]

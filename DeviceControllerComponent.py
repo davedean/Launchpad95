@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#from consts import * # mk1
-from consts_mk2 import * # mk2
+from consts import * 
 from _Framework.DeviceComponent import DeviceComponent
 from _Framework.ButtonElement import ButtonElement
 from DeviceControllerStrip import DeviceControllerStrip
