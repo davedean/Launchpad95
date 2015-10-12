@@ -20,7 +20,7 @@ class MainSelectorComponent(ModeSelectorComponent):
 	def log(self, message):
 		self._parent.log_message((' ' + message + ' ').center(50, '='))
 
-	def __init__(self, matrix, top_buttons, side_buttons, config_button, osd, parent):
+	def __init__(self, matrix, top_buttons, side_buttons, config_button, osd, parent, skin):
 		assert isinstance(matrix, ButtonMatrixElement)
 		assert ((matrix.width() == 8) and (matrix.height() == 8))
 		assert isinstance(top_buttons, tuple)
@@ -29,6 +29,7 @@ class MainSelectorComponent(ModeSelectorComponent):
 		assert (len(side_buttons) == 8)
 		assert isinstance(config_button, ButtonElement)
 		ModeSelectorComponent.__init__(self)
+		self._skin = skin
 		self._osd = osd
 		self._parent = parent
 		self._mode_index = 0
@@ -44,17 +45,17 @@ class MainSelectorComponent(ModeSelectorComponent):
 			clip_stop_buttons = [] 
 			for column in range(8):
 				clip_stop_buttons.append(matrix.get_button(column,matrix.height()-1))
-			self._session = SpecialSessionComponent(matrix.width(), matrix.height()-1, clip_stop_buttons, self)
+			self._session = SpecialSessionComponent(matrix.width(), matrix.height()-1, clip_stop_buttons, self, self._skin)
 		else:
 			#no stop buttons
-			self._session = SpecialSessionComponent(matrix.width(), matrix.height(), None, self)
+			self._session = SpecialSessionComponent(matrix.width(), matrix.height(), None, self, self._skin)
 			
 		self._session.set_osd(self._osd)
 		self._session.name = 'Session_Control'
 		
 		self._zooming = DeprecatedSessionZoomingComponent(self._session)
 		self._zooming.name = 'Session_Overview'
-		self._zooming.set_empty_value(LED_OFF)
+		self._zooming.set_empty_value(self._skin.off)
 		
 		self._matrix = matrix
 		self._side_buttons = side_buttons
@@ -65,21 +66,21 @@ class MainSelectorComponent(ModeSelectorComponent):
 		for button in self._side_buttons + self._nav_buttons:
 			self._all_buttons.append(button)
 
-		self._sub_modes = SubSelectorComponent(matrix, side_buttons, self._session)
+		self._sub_modes = SubSelectorComponent(matrix, side_buttons, self._session, skin)
 		self._sub_modes.name = 'Mixer_Modes'
 		self._sub_modes._mixer.set_osd(self._osd)
 		self._sub_modes.set_update_callback(self._update_control_channels)
 
-		self._stepseq = StepSequencerComponent(self._matrix, self._side_buttons, self._nav_buttons, self)
+		self._stepseq = StepSequencerComponent(self._matrix, self._side_buttons, self._nav_buttons, self, skin)
 		self._stepseq.set_osd(self._osd)
 		
-		self._stepseq2 = StepSequencerComponent2(self._matrix, self._side_buttons, self._nav_buttons, self)
+		self._stepseq2 = StepSequencerComponent2(self._matrix, self._side_buttons, self._nav_buttons, self, skin)
 		self._stepseq2.set_osd(self._osd)
 
-		self._instrument_controller = InstrumentControllerComponent(self._matrix, self._side_buttons, self._nav_buttons, self)
+		self._instrument_controller = InstrumentControllerComponent(self._matrix, self._side_buttons, self._nav_buttons, self, skin)
 		self._instrument_controller.set_osd(self._osd)
 
-		self._device_controller = DeviceControllerComponent(self._matrix, self._side_buttons, self._nav_buttons, self)
+		self._device_controller = DeviceControllerComponent(self._matrix, self._side_buttons, self._nav_buttons, self, skin)
 		self._device_controller.set_osd(self._osd)
 
 		self._init_session()
@@ -92,7 +93,7 @@ class MainSelectorComponent(ModeSelectorComponent):
 		self._session = None
 		self._zooming = None
 		for button in self._all_buttons:
-			button.set_on_off_values(127, LED_OFF)
+			button.set_on_off_values(127, self._skin.off)
 
 		self._config_button.turn_off()
 		self._matrix = None
@@ -144,11 +145,11 @@ class MainSelectorComponent(ModeSelectorComponent):
 	def _update_mode_buttons(self):
 		for index in range(4):
 			if(self._sub_mode_index[index] == 0):
-				self._modes_buttons[index].set_on_off_values(MID_FULL, MID_THIRD)
+				self._modes_buttons[index].set_on_off_values(self._skin.AMBER_FULL, self._skin.AMBER_THIRD)
 			if(self._sub_mode_index[index] == 1):
-				self._modes_buttons[index].set_on_off_values(ON_FULL, ON_THIRD)
+				self._modes_buttons[index].set_on_off_values(self._skin.GREEN_FULL, self._skin.GREEN_THIRD)
 			if(self._sub_mode_index[index] == 2):
-				self._modes_buttons[index].set_on_off_values(OFF_FULL, OFF_THIRD)
+				self._modes_buttons[index].set_on_off_values(self._skin.RED_FULL, self._skin.RED_THIRD)
 
 			if (index == self._main_mode_index):
 				self._modes_buttons[index].turn_on()
@@ -320,9 +321,9 @@ class MainSelectorComponent(ModeSelectorComponent):
 		assert isinstance(as_active, type(False))
 		for button in self._nav_buttons:
 			if as_enabled:
-				button.set_on_off_values(ON_FULL, ON_THIRD)
+				button.set_on_off_values(self._skin.GREEN_FULL, self._skin.GREEN_THIRD)
 			else:
-				button.set_on_off_values(127, LED_OFF)
+				button.set_on_off_values(127, self._skin.off)
 
 		# matrix
 		self._activate_matrix(True)
@@ -331,14 +332,14 @@ class MainSelectorComponent(ModeSelectorComponent):
 			if as_active:
 				scene_button = self._side_buttons[scene_index]
 				scene_button.set_enabled(as_active)
-				scene_button.set_on_off_values(127, LED_OFF)
+				scene_button.set_on_off_values(127, self._skin.off)
 				scene.set_launch_button(scene_button)
 			else:
 				scene.set_launch_button(None)  
 			for track_index in range(self._session._num_tracks):
 				if as_active:
 					button = self._matrix.get_button(track_index, scene_index)
-					button.set_on_off_values(127, LED_OFF)
+					button.set_on_off_values(127, self._skin.off)
 					button.set_enabled(as_active)
 					scene.clip_slot(track_index).set_launch_button(button)
 				else:
@@ -348,11 +349,11 @@ class MainSelectorComponent(ModeSelectorComponent):
 			if self._session._stop_clip_buttons != None:
 				for button in self._session._stop_clip_buttons:
 					button.set_enabled(as_active)
-					button.set_on_off_values(MID_THIRD, LED_OFF)
+					button.set_on_off_values(self._skin.session.track_stop, self._skin.off)
 				self._session.set_stop_track_clip_buttons(self._session._stop_clip_buttons)
 
 				self._side_buttons[self._session._num_scenes].set_enabled(as_active)
-				self._side_buttons[self._session._num_scenes].set_on_off_values(MID_THIRD, LED_OFF)
+				self._side_buttons[self._session._num_scenes].set_on_off_values(self._skin.session._stop_clip_buttons, self._skin.off)
 				self._session.set_stop_all_clips_button(self._side_buttons[self._session._num_scenes])
 			else:
 				self._session.set_stop_track_clip_buttons(None)
@@ -416,19 +417,19 @@ class MainSelectorComponent(ModeSelectorComponent):
 	def _setup_user_mode(self, release_matrix=True, release_side_buttons=True, release_nav_buttons=True, drum_rack_mode=True):
 		for scene_index in range(8):
 			scene_button = self._side_buttons[scene_index]
-			scene_button.set_on_off_values(127, LED_OFF)
+			scene_button.set_on_off_values(127, self._skin.off)
 			scene_button.force_next_send()
 			scene_button.turn_off()
 			scene_button.set_enabled((not release_side_buttons))
 
 			for track_index in range(8):
 				button = self._matrix.get_button(track_index, scene_index)
-				button.set_on_off_values(127, LED_OFF)
+				button.set_on_off_values(127, self._skin.off)
 				button.turn_off()
 				button.set_enabled((not release_matrix))
 
 		for button in self._nav_buttons:
-			button.set_on_off_values(127, LED_OFF)
+			button.set_on_off_values(127, self._skin.off)
 			button.turn_off()
 			button.set_enabled((not release_nav_buttons))
 
@@ -480,34 +481,37 @@ class MainSelectorComponent(ModeSelectorComponent):
 		bugfix = self._parent._live_bugfix_version
 		if (major >= 9 and minor > 1) or (major >= 9 and minor >= 1 and bugfix >= 2):
 			# api changed in 9.1.2
-			self._session.set_stop_clip_value(MID_THIRD)
-			self._session.set_stop_clip_triggered_value(MID_BLINK)
+			self._session.set_stop_clip_value(self._skin.session.track_stop)
+			self._session.set_stop_clip_triggered_value(self._skin.session.clip_triggered_to_stop)
 		else:
 			# api for 9.1.1 below
-			self._session.set_stop_track_clip_value(MID_BLINK)
+			self._session.set_stop_track_clip_value(self._skin.session.clip_triggered_to_stop)
 
+		#if self._mk2:
+		#	self._session.set_rgb_mode(self._skin.CLIP_COLOR_TABLE, self._skin.RGB_COLOR_TABLE)
+			
 		session_height = self._matrix.height()
 		if self._session._stop_clip_buttons != None:
 			session_height = self._matrix.height()-1
 			
 		for scene_index in range(session_height):
 			scene = self._session.scene(scene_index)
-			scene.set_triggered_value(ON_BLINK)
+			scene.set_triggered_value(self._skin.session.scene_triggered)
 			scene.name = 'Scene_' + str(scene_index)
 			for track_index in range(self._matrix.width()):
 				clip_slot = scene.clip_slot(track_index)
-				clip_slot.set_triggered_to_play_value(ON_BLINK)
-				clip_slot.set_triggered_to_record_value(OFF_BLINK)
-				clip_slot.set_stopped_value(MID_FULL)
-				clip_slot.set_started_value(ON_FULL)
-				clip_slot.set_recording_value(OFF_FULL)
-				clip_slot.set_record_button_value(OFF_THIRD)
+				clip_slot.set_triggered_to_play_value(self._skin.session.clip_triggered_to_play)
+				clip_slot.set_triggered_to_record_value(self._skin.session.clip_triggered_to_record)
+				clip_slot.set_stopped_value(self._skin.session.clip_stopped)
+				clip_slot.set_started_value(self._skin.session.clip_playing)
+				clip_slot.set_recording_value(self._skin.session.clip_recording)
+				clip_slot.set_record_button_value(self._skin.session.clip_record)
 				clip_slot.name = str(track_index) + '_Clip_Slot_' + str(scene_index)
 				self._all_buttons.append(self._matrix.get_button(track_index, scene_index))
 
-		self._zooming.set_stopped_value(OFF_FULL)
-		self._zooming.set_selected_value(MID_FULL)
-		self._zooming.set_playing_value(ON_FULL)
+		self._zooming.set_stopped_value(self._skin.RED_FULL)
+		self._zooming.set_selected_value(self._skin.AMBER_FULL)
+		self._zooming.set_playing_value(self._skin.GREEN_FULL)
 
 	def _activate_navigation_buttons(self, active):
 		for button in self._nav_buttons:

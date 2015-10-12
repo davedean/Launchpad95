@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from _Framework.SessionComponent import SessionComponent
+from consts import *
 
-#from consts import * # mk1
-from consts_mk2 import * # mk2
 
 class SpecialSessionComponent(SessionComponent):
 
 	""" Special session subclass that handles ConfigurableButtons """
 
-	def __init__(self, num_tracks, num_scenes, stop_clip_buttons,parent):
+	def __init__(self, num_tracks, num_scenes, stop_clip_buttons,parent,skin):
 		self._stop_clip_buttons=stop_clip_buttons
+		self._skin = skin
 		self._osd = None
 		self._parent = parent
 		SessionComponent.__init__(self, num_tracks, num_scenes)
@@ -78,7 +78,7 @@ class SpecialSessionComponent(SessionComponent):
 					if track.fired_slot_index == -2:
 						button.send_value(self._stop_clip_triggered_value)
 					elif track.playing_slot_index >= 0:
-						button.send_value(MID_THIRD)
+						button.send_value(self._skin.session.track_stop)
 					else:
 						#self._parent._parent.log_message("index:"+str(index))
 						button.turn_off()

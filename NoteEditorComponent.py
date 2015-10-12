@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#from consts import * # mk1
-from consts_mk2 import * # mk2
+from consts import *  # noqa
 from _Framework.ControlSurfaceComponent import ControlSurfaceComponent
 from _Framework.ButtonElement import ButtonElement
 from _Framework.ButtonMatrixElement import ButtonMatrixElement
@@ -10,25 +9,25 @@ import time
 
 class NoteEditorComponent(ControlSurfaceComponent):
 
-	def __init__(self, parent, matrix):
+	def __init__(self, parent, matrix, skin):
 		ControlSurfaceComponent.__init__(self)
 		self.set_enabled(False)
 		self._parent = parent
-
+		self._skin = skin
 		self._clip = None
 		self._note_cache = None
 		self._playhead = None
 
 		# metronome
 		self.display_metronome = True
-		self.metronome_color = MID_FULL
+		self.metronome_color = self._skin.note_editor.metronome
 
 		# Velocity colour map. this must remain of lengh 3.
 		self.velocity_map = [70, 90, 110]
-		self.velocity_color_map = [ON_THIRD, ON_HALF, ON_FULL]
+		self.velocity_color_map = [self._skin.note_editor.velocity_1, self._skin.note_editor.velocity_2, self._skin.note_editor.velocity_3]
 		# other colors
-		self.muted_note_color = OFF_THIRD
-		self.playing_note_color = OFF_FULL
+		self.muted_note_color = self._skin.note_editor.muted
+		self.playing_note_color = self._skin.note_editor.playing
 
 		self.long_button_press = 0.500
 
@@ -166,18 +165,18 @@ class NoteEditorComponent(ControlSurfaceComponent):
 
 	def _display_selected_page(self):
 		for i in range(0, self._height):
-			self._grid_back_buffer[self._page % self.width][i] = MID_FULL
+			self._grid_back_buffer[self._page % self.width][i] = self._skin.note_selector.page_marker
 
 	def _display_note_markers(self):
 		for i in range(0, self.height / self.number_of_lines_per_note):
 			if self._key_index_is_root_note[i]:
 				for j in range(0, self.number_of_lines_per_note):
-					self._grid_back_buffer[0][self.height - i * self.number_of_lines_per_note - j - 1] = MID_FULL
-					self._grid_back_buffer[1][self.height - i * self.number_of_lines_per_note - j - 1] = MID_FULL
-					self._grid_back_buffer[2][self.height - i * self.number_of_lines_per_note - j - 1] = MID_FULL
+					self._grid_back_buffer[0][self.height - i * self.number_of_lines_per_note - j - 1] = self._skin.note_editor.note_marker
+					self._grid_back_buffer[1][self.height - i * self.number_of_lines_per_note - j - 1] = self._skin.note_editor.note_marker
+					self._grid_back_buffer[2][self.height - i * self.number_of_lines_per_note - j - 1] = self._skin.note_editor.note_marker
 			elif self._key_index_is_in_scale[i]:
 				for j in range(0, self.number_of_lines_per_note):
-					self._grid_back_buffer[0][self.height - i * self.number_of_lines_per_note - j - 1] = MID_FULL
+					self._grid_back_buffer[0][self.height - i * self.number_of_lines_per_note - j - 1] = self._skin.note_editor.note_marker
 # MATRIX
 
 	def set_button_matrix(self, matrix):
@@ -239,16 +238,26 @@ class NoteEditorComponent(ControlSurfaceComponent):
 
 					if self.is_multinote:
 						# compute base note, taking into account number_of_lines_per_note
-						note_grid_y_base = index_of(self.key_indexes, note_key) * self.number_of_lines_per_note
+						try:
+							note_idx = self.key_indexes.index(note_key)
+						except ValueError:
+							note_idx = -1
+						note_grid_y_base = self.key_indexes.index(note_key) * self.number_of_lines_per_note
 						if(note_grid_y_base >= 0):
 							note_grid_y_base = (7 - note_grid_y_base) - (self.number_of_lines_per_note - 1)
 						if(note_grid_y_base < 0):
 							note_grid_y_base = -1
 
 						note_grid_y_offset = int(note_position / self.quantization / self.width) % self.number_of_lines_per_note
-						# self._parent._parent._parent.log_message("index:"+str(index_of(self.key_indexes,note_key))+" note_grid_y_base:"+str(note_grid_y_base)+" note_grid_y_offset:"+ str(note_grid_y_offset))
+						# self._parent._parent._parent.log_message("index:"+str(index _of(self.key_indexes,note_key))+" note_grid_y_base:"+str(note_grid_y_base)+" note_grid_y_offset:"+ str(note_grid_y_offset))
 					else:
-						if index_of(self.key_indexes, note_key) == 0:
+						idx = 1
+						try:
+							idx = self.key_indexes.index(note_key)
+						except ValueError:
+							idx = -1
+						
+						if idx == 0:
 							note_grid_y_base = 0
 						else:
 							note_grid_y_base = -1
@@ -374,13 +383,13 @@ class NoteEditorComponent(ControlSurfaceComponent):
 		if self.is_enabled() and self._velocity_button != None:
 			if self._clip != None:
 				if self._is_velocity_shifted:
-					self._velocity_button.set_on_off_values(ON_FULL, ON_THIRD)
+					self._velocity_button.set_on_off_values(self._skin.GREEN_FULL, self._skin.GREEN_THIRD)
 					self._velocity_button.turn_on()
 				else:
-					self._velocity_button.set_on_off_values(self.velocity_color_map[self._velocity_index], LED_OFF)
+					self._velocity_button.set_on_off_values(self.velocity_color_map[self._velocity_index], self._skin.off)
 					self._velocity_button.turn_on()
 			else:
-				self._velocity_button.set_on_off_values(LED_OFF, LED_OFF)
+				self._velocity_button.set_on_off_values(self._skin.off, self._skin.off)
 				self._velocity_button.turn_off()
 
 	def set_velocity_button(self, button):
@@ -420,13 +429,13 @@ class NoteEditorComponent(ControlSurfaceComponent):
 	# def _update_mute_shift_button(self):
 	# 		if self.is_enabled() and self._mute_shift_button != None:
 	# 			if self._clip != None and self._clip.is_midi_clip:
-	# 				self._mute_shift_button.set_on_off_values(OFF_FULL, OFF_THIRD)
+	# 				self._mute_shift_button.set_on_off_values(RED_FULL, RED_THIRD)
 	# 				if self._is_mute_shifted:
 	# 					self._mute_shift_button.turn_on()
 	# 				else:
 	# 					self._mute_shift_button.turn_off()
 	# 			else:
-	# 				self._mute_shift_button.set_on_off_values(LED_OFF, LED_OFF)
+	# 				self._mute_shift_button.set_on_off_values(self._skin.off, self._skin.off)
 	# 				self._mute_shift_button.turn_off()
 	# 
 	# 	def set_mute_shift_button(self, button):

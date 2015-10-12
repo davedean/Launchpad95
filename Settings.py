@@ -22,5 +22,9 @@ USER_MODES = ["instrument", "device", "user 1", "drum stepseq", "melodic stepseq
 STEPSEQ__SAVE_SCALE = None
 INSTRUMENT__SAVE_SCALE = None
 
+DEVICE = "Launchpad"
+# uncomment the line below to enable launchpad mk2 mode
+#DEVICE = "Launchpad mk2"
+
 
 

@@ -9,14 +9,14 @@ from itertools import imap
 from TrackControllerComponent import TrackControllerComponent
 from ScaleComponent import *  # noqa
 from StepSequencerComponent import StepSequencerComponent
-#from consts import * # mk1
-from consts_mk2 import * # mk2
+from consts import *  # noqa
 import Settings
 
 class InstrumentControllerComponent(CompoundComponent):
 
-	def __init__(self, matrix, side_buttons, top_buttons, parent):
+	def __init__(self, matrix, side_buttons, top_buttons, parent, skin):
 		super(InstrumentControllerComponent, self).__init__()
+		self._skin = skin
 		self._parent = parent
 		self._osd = None
 		self._matrix = None
@@ -26,8 +26,8 @@ class InstrumentControllerComponent(CompoundComponent):
 		self.base_channel = 11
 		self._quick_scales = [0, 1, 2, 3, 4, 5, 6, 7, 10, 13, 14, 15, 17, 18, 24]
 		self._quick_scale_root = True
-		self._normal_feedback_velocity = MID_FULL
-		self._recordind_feedback_velocity = OFF_FULL
+		self._normal_feedback_velocity = self._skin.AMBER_FULL
+		self._recordind_feedback_velocity = self._skin.RED_FULL
 		self._drum_group_device = None
 		self._octave_up_button = None
 		self._octave_down_button = None
@@ -36,7 +36,7 @@ class InstrumentControllerComponent(CompoundComponent):
 		self.set_octave_up_button(side_buttons[2])
 		self.set_octave_down_button(side_buttons[3])
 
-		self._track_controller = self.register_component(TrackControllerComponent())
+		self._track_controller = self.register_component(TrackControllerComponent(self._skin))
 		self._track_controller.set_enabled(False)
 		self._track_controller.set_parent(self._parent._parent)
 		self._track_controller.set_prev_scene_button(top_buttons[0])
@@ -49,7 +49,7 @@ class InstrumentControllerComponent(CompoundComponent):
 		self._track_controller.set_session_record_button(side_buttons[7])
 		self._track_controller.set_solo_button(side_buttons[6])
 
-		self._scales = self.register_component(ScalesComponent())
+		self._scales = self.register_component(ScalesComponent(self._skin))
 		self._scales.set_enabled(False)
 		self.set_matrix(matrix)
 		self._scales.set_parent(self)
@@ -121,7 +121,7 @@ class InstrumentControllerComponent(CompoundComponent):
 
 	def _scales_toggle(self, value, sender):
 		if self.is_enabled():
-			self._scales_toggle_button.set_on_off_values(MID_FULL, MID_THIRD)
+			self._scales_toggle_button.set_on_off_values(self._skin.AMBER_FULL, self._skin.AMBER_THIRD)
 			if (value is not 0):
 				self._scales.set_enabled(True)
 				self._osd_mode_backup = self._osd.mode
@@ -274,22 +274,22 @@ class InstrumentControllerComponent(CompoundComponent):
 			self._update_matrix()
 
 			for button in self._remaining_buttons:
-				button.set_on_off_values(LED_OFF, LED_OFF)
+				button.set_on_off_values(self._skin.off, self._skin.off)
 				button.turn_off()
 
 			if self._scales_toggle_button != None:
-				self._scales_toggle_button.set_on_off_values(MID_FULL, MID_THIRD)
+				self._scales_toggle_button.set_on_off_values(self._skin.AMBER_FULL, self._skin.AMBER_THIRD)
 				self._scales_toggle_button.turn_off()
 
 			if self._octave_up_button != None:
-				self._octave_up_button.set_on_off_values(ON_FULL, ON_THIRD)
+				self._octave_up_button.set_on_off_values(self._skin.GREEN_FULL, self._skin.GREEN_THIRD)
 				if(self._can_scroll_octave_up()):
 					self._octave_up_button.turn_on()
 				else:
 					self._octave_up_button.turn_off()
 
 			if self._octave_down_button != None:
-				self._octave_down_button.set_on_off_values(ON_FULL, ON_THIRD)
+				self._octave_down_button.set_on_off_values(self._skin.GREEN_FULL, self._skin.GREEN_THIRD)
 				if(self._can_scroll_octave_down()):
 					self._octave_down_button.turn_on()
 				else:
@@ -434,17 +434,17 @@ class InstrumentControllerComponent(CompoundComponent):
 
 						if note < 128 and note >= 0:
 							if self._drum_group_device != None and self._drum_group_device.can_have_drum_pads and self._drum_group_device.has_drum_pads and self._drum_group_device.drum_pads[note].chains:
-								button.set_on_off_values(OFF_FULL, ON_THIRD)
+								button.set_on_off_values(self._skin.RED_FULL, self._skin.GREEN_THIRD)
 								button.set_enabled(False)
 								button.set_channel(self.base_channel)
 								button.set_identifier(note)
 							else:
-								button.set_on_off_values(ON_FULL, LED_OFF)
+								button.set_on_off_values(self._skin.GREEN_FULL, self._skin.off)
 								button.set_enabled(False)
 								button.set_channel(self.base_channel)
 								button.set_identifier(note)
 						else:
-							button.set_on_off_values(LED_OFF, LED_OFF)
+							button.set_on_off_values(self._skin.off, self._skin.off)
 							button.set_enabled(True)
 							button.set_channel(non_feedback_channel)
 						button.force_next_send()
@@ -453,7 +453,7 @@ class InstrumentControllerComponent(CompoundComponent):
 			else:
 				if self._scales.is_quick_scale:
 					quick_scale_root_button = self._matrix.get_button(7, 0)
-					quick_scale_root_button.set_on_off_values(OFF_THIRD, OFF_FULL)
+					quick_scale_root_button.set_on_off_values(self._skin.RED_THIRD, self._skin.RED_FULL)
 					quick_scale_root_button.set_enabled(True)
 					quick_scale_root_button.force_next_send()
 					if self._quick_scale_root:
@@ -466,23 +466,23 @@ class InstrumentControllerComponent(CompoundComponent):
 
 					if self._quick_scale_root:
 						if selected_modus == 0 or selected_modus == 12:
-							off_color = MID_THIRD
-							on_color = MID_FULL
-							fifth_button_color = OFF_THIRD
-							mode_button_color = OFF_THIRD
-							relative_scale_button_color = OFF_THIRD
+							off_color = self._skin.AMBER_THIRD
+							on_color = self._skin.AMBER_FULL
+							fifth_button_color = self._skin.RED_THIRD
+							mode_button_color = self._skin.RED_THIRD
+							relative_scale_button_color = self._skin.RED_THIRD
 						elif selected_modus == 1 or selected_modus == 11:
-							off_color = OFF_THIRD
-							on_color = OFF_FULL
-							fifth_button_color = ON_THIRD
-							mode_button_color = ON_THIRD
-							relative_scale_button_color = ON_THIRD
+							off_color = self._skin.RED_THIRD
+							on_color = self._skin.RED_FULL
+							fifth_button_color = self._skin.GREEN_THIRD
+							mode_button_color = self._skin.GREEN_THIRD
+							relative_scale_button_color = self._skin.GREEN_THIRD
 						else:
-							off_color = ON_THIRD
-							on_color = ON_FULL
-							fifth_button_color = OFF_THIRD
-							mode_button_color = OFF_THIRD
-							relative_scale_button_color = OFF_THIRD
+							off_color = self._skin.GREEN_THIRD
+							on_color = self._skin.GREEN_FULL
+							fifth_button_color = self._skin.RED_THIRD
+							mode_button_color = self._skin.RED_THIRD
+							relative_scale_button_color = self._skin.RED_THIRD
 
 						# circle of 5th nav right
 						button = self._matrix.get_button(7, 1)
@@ -529,9 +529,9 @@ class InstrumentControllerComponent(CompoundComponent):
 							button = self._matrix.get_button(x, 0)
 							button.set_enabled(True)
 							if self._quick_scales[x] != -1:
-								button.set_on_off_values(MID_FULL, MID_THIRD)
+								button.set_on_off_values(self._skin.AMBER_FULL, self._skin.AMBER_THIRD)
 							else:
-								button.set_on_off_values(LED_OFF, LED_OFF)
+								button.set_on_off_values(self._skin.off, self._skin.off)
 							button.force_next_send()
 							if self._quick_scales[x] == selected_modus:
 								button.turn_on()
@@ -542,9 +542,9 @@ class InstrumentControllerComponent(CompoundComponent):
 							button = self._matrix.get_button(x, 1)
 							button.set_enabled(True)
 							if self._quick_scales[x + 7] != -1:
-								button.set_on_off_values(MID_FULL, MID_THIRD)
+								button.set_on_off_values(self._skin.AMBER_FULL, self._skin.AMBER_THIRD)
 							else:
-								button.set_on_off_values(LED_OFF, LED_OFF)
+								button.set_on_off_values(self._skin.off, self._skin.off)
 							button.force_next_send()
 							if self._quick_scales[x + 7] == selected_modus:
 								button.turn_on()
@@ -558,7 +558,7 @@ class InstrumentControllerComponent(CompoundComponent):
 					if button and (not self._scales.is_quick_scale or j > 1):
 						note_info = pattern.note(i, max_j - j)
 						if note_info.index != None:
-							button.set_on_off_values(OFF_FULL, note_info.color)
+							button.set_on_off_values(self._skin.RED_FULL, note_info.color)
 							button.set_enabled(False)
 							button.set_channel(note_channel[note_info.index])
 							# comment the line above and use the one below if you want instrument controller to use one channel instead of 3
@@ -567,7 +567,7 @@ class InstrumentControllerComponent(CompoundComponent):
 							note_channel[note_info.index] = note_channel[note_info.index] + 1
 						else:
 							button.set_channel(non_feedback_channel)
-							button.set_on_off_values(LED_OFF, LED_OFF)
+							button.set_on_off_values(self._skin.off, self._skin.off)
 							button.set_light(note_info.color)
 							button.set_enabled(True)
 						button.force_next_send()
@@ -617,4 +617,6 @@ class InstrumentControllerComponent(CompoundComponent):
 				steps = [interval, 1]
 				origin = [0, origin]
 
-			return MelodicPattern(steps=steps, scale=notes, origin=origin, base_note=self._scales._octave_index * 12, base_note_color=self._scales.get_base_note_color(), scale_note_color=self._scales.get_scale_note_color(), scale_highlight_color=self._scales.get_scale_highlight_color(), chromatic_mode=self._scales.is_chromatic(), chromatic_gtr_mode=self._scales.is_chromatic_gtr(), diatonic_ns_mode=self._scales.is_diatonic_ns())
+			return MelodicPattern(steps=steps, scale=notes, origin=origin, base_note=self._scales._octave_index * 12, 
+				skin = self._skin,
+				chromatic_mode=self._scales.is_chromatic(), chromatic_gtr_mode=self._scales.is_chromatic_gtr(), diatonic_ns_mode=self._scales.is_diatonic_ns())

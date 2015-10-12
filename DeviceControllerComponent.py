@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#from consts import * # mk1
-from consts_mk2 import * # mk2
+from consts import *  # noqa
 from _Framework.DeviceComponent import DeviceComponent
 from _Framework.ButtonElement import ButtonElement
 from DeviceControllerStrip import DeviceControllerStrip
@@ -13,9 +12,10 @@ class DeviceControllerComponent(DeviceComponent):
 	__module__ = __name__
 	__doc__ = ''
 
-	def __init__(self, matrix, side_buttons, top_buttons, parent):
+	def __init__(self, matrix, side_buttons, top_buttons, parent, skin):
 		self._parent = parent
 		self._matrix = matrix
+		self._skin = skin
 		self._prev_track_button = None
 		self._next_track_button = None
 		self._prev_device_button = None
@@ -41,7 +41,7 @@ class DeviceControllerComponent(DeviceComponent):
 		self.set_enabled(False)
 
 		for column in range(self._matrix.width()):
-			slider = DeviceControllerStrip(tuple([self._matrix.get_button(column, (self._matrix.height() - 1 - row)) for row in range(self._matrix.height())]),self)
+			slider = DeviceControllerStrip(tuple([self._matrix.get_button(column, (self._matrix.height() - 1 - row)) for row in range(self._matrix.height())]),self, self._skin)
 			self._sliders.append(slider)
 		self._sliders = tuple(self._sliders)
 		self.set_parameter_controls(self._sliders)
@@ -180,18 +180,18 @@ class DeviceControllerComponent(DeviceComponent):
 			# update bank buttons colors
 			if self._device != None:
 				if(self._prev_bank_button != None):
-					self._prev_bank_button.set_on_off_values(MID_FULL, MID_THIRD)
+					self._prev_bank_button.set_on_off_values(self._skin.AMBER_FULL, self._skin.AMBER_THIRD)
 				if(self._next_bank_button != None):
-					self._next_bank_button.set_on_off_values(MID_FULL, MID_THIRD)
+					self._next_bank_button.set_on_off_values(self._skin.AMBER_FULL, self._skin.AMBER_THIRD)
 			else:
-				self._prev_bank_button.set_on_off_values(LED_OFF, LED_OFF)
-				self._next_bank_button.set_on_off_values(LED_OFF, LED_OFF)
+				self._prev_bank_button.set_on_off_values(self._skin.off, self._skin.off)
+				self._next_bank_button.set_on_off_values(self._skin.off, self._skin.off)
 
 			for x in range(self._matrix.width()):
 				for y in range(self._matrix.height()):
 					#if self._force:
 					if(self._device == None):
-						self._matrix.get_button(x, y).set_on_off_values(LED_OFF, LED_OFF)
+						self._matrix.get_button(x, y).set_on_off_values(self._skin.off, self._skin.off)
 						self._matrix.get_button(x, y).turn_off()
 						
 			# update parent
@@ -215,9 +215,9 @@ class DeviceControllerComponent(DeviceComponent):
 		if self.is_enabled():
 			for index in range(len(self._locked_devices)):
 				if self._locked_devices[index] != None:
-					self._lock_buttons[index].set_on_off_values(OFF_FULL, OFF_THIRD)
+					self._lock_buttons[index].set_on_off_values(self._skin.RED_FULL, self._skin.RED_THIRD)
 				else:
-					self._lock_buttons[index].set_on_off_values(MID_THIRD, MID_THIRD)#LED_OFF
+					self._lock_buttons[index].set_on_off_values(self._skin.AMBER_THIRD, self._skin.AMBER_THIRD) #LED_OFF
 				if self._locked_device_index==index:
 					self._lock_buttons[index].turn_on()
 				else:
@@ -308,13 +308,13 @@ class DeviceControllerComponent(DeviceComponent):
 		if (self._precision_button != None and self.is_enabled()):
 			if (self._precision_button != None):
 				if self._device != None:
-					self._precision_button.set_on_off_values(ON_FULL, ON_THIRD)
+					self._precision_button.set_on_off_values(self._skin.GREEN_FULL, self._skin.GREEN_THIRD)
 					if self._precision_mode:
 						self._precision_button.turn_on()
 					else:
 						self._precision_button.turn_off()
 				else:
-					self._precision_button.set_on_off_values(LED_OFF, LED_OFF)
+					self._precision_button.set_on_off_values(self._skin.off, self._skin.off)
 					self._precision_button.turn_off()
 
 	def _precision_value(self, value, sender):
@@ -344,13 +344,13 @@ class DeviceControllerComponent(DeviceComponent):
 			if (self._on_off_button != None):
 				parameter = self._on_off_parameter()
 				if parameter != None:
-					self._on_off_button.set_on_off_values(ON_FULL, ON_THIRD)
+					self._on_off_button.set_on_off_values(self._skin.GREEN_FULL, self._skin.GREEN_THIRD)
 					if parameter.is_enabled and parameter.value > 0:
 						self._on_off_button.turn_on()
 					else:
 						self._on_off_button.turn_off()
 				else:
-					self._on_off_button.set_on_off_values(LED_OFF, LED_OFF)
+					self._on_off_button.set_on_off_values(self._skin.off, self._skin.off)
 					self._on_off_button.turn_off()
 
 	def _on_off_value(self, value):
@@ -374,14 +374,14 @@ class DeviceControllerComponent(DeviceComponent):
 		# tracks
 		if self.is_enabled():
 			if(self._prev_track_button != None):
-				self._prev_track_button.set_on_off_values(ON_FULL, ON_THIRD)
+				self._prev_track_button.set_on_off_values(self._skin.GREEN_FULL, self._skin.GREEN_THIRD)
 				if(self.selected_track_idx() > 0 and not self._locked_to_device2):
 					self._prev_track_button.turn_on()
 				else:
 					self._prev_track_button.turn_off()
 
 			if(self._next_track_button != None):
-				self._next_track_button.set_on_off_values(ON_FULL, ON_THIRD)
+				self._next_track_button.set_on_off_values(self._skin.GREEN_FULL, self._skin.GREEN_THIRD)
 				if(self.selected_track_idx() < len(self.song().tracks) - 1 and not self._locked_to_device2):
 					self._next_track_button.turn_on()
 				else:
@@ -411,7 +411,7 @@ class DeviceControllerComponent(DeviceComponent):
 			if (self._prev_track_button != None):
 				self._prev_track_button.remove_value_listener(self._prev_track_value)
 			self._prev_track_button = button
-			self._prev_track_button.set_on_off_values(ON_FULL, ON_THIRD)
+			self._prev_track_button.set_on_off_values(self._skin.GREEN_FULL, self._skin.GREEN_THIRD)
 			if (self._prev_track_button != None):
 				assert isinstance(button, ButtonElement)
 				self._prev_track_button.add_value_listener(self._prev_track_value, identify_sender=True)
@@ -436,13 +436,13 @@ class DeviceControllerComponent(DeviceComponent):
 	def update_device_buttons(self):
 		if self.is_enabled():
 			if(self._prev_device_button != None):
-				self._prev_device_button.set_on_off_values(ON_FULL, ON_THIRD)
+				self._prev_device_button.set_on_off_values(self._skin.GREEN_FULL, self._skin.GREEN_THIRD)
 				if(self.selected_device_idx() > 0 and not self._locked_to_device2 and len(self.selected_track().devices) > 0):
 					self._prev_device_button.turn_on()
 				else:
 					self._prev_device_button.turn_off()
 			if(self._next_device_button != None):
-				self._next_device_button.set_on_off_values(ON_FULL, ON_THIRD)
+				self._next_device_button.set_on_off_values(self._skin.GREEN_FULL, self._skin.GREEN_THIRD)
 				if(self.selected_device_idx() < len(self.selected_track().devices) - 1 and not self._locked_to_device2 and len(self.selected_track().devices) > 0):
 					self._next_device_button.turn_on()
 				else:
